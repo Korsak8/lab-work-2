@@ -7,20 +7,24 @@
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f9f5;
+            background-color: #f9f5ff;
             margin: 20px;
+            color: #4a2c82;
         }
 
         h1 {
             text-align: center;
-            color: #1b5e20;
+            color: #6a3093;
             margin-bottom: 30px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
 
         h2 {
-            color: #2e7d32;
+            color: #8e44ad;
             margin-top: 30px;
             text-align: center;
+            border-bottom: 2px solid #d2b4de;
+            padding-bottom: 10px;
         }
 
         .buttons-container {
@@ -33,31 +37,73 @@
 
         button {
             padding: 12px 24px;
-            background-color: #388e3c;
+            background: linear-gradient(to bottom, #9b59b6, #8e44ad);
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 25px;
             font-size: 16px;
             cursor: pointer;
             transition: all 0.3s ease;
-            min-width: 150px;
+            min-width: 180px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
         }
 
         button:hover {
-            background-color: #2e7d32;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            background: linear-gradient(to bottom, #8e44ad, #7d3c98);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
         }
 
         button:active {
-            transform: translateY(0);
+            transform: translateY(1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        button::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
+        }
+
+        button:focus:not(:active)::after {
+            animation: ripple 1s ease-out;
+        }
+
+        @keyframes ripple {
+            0% {
+                transform: scale(0, 0);
+                opacity: 0.5;
+            }
+            100% {
+                transform: scale(20, 20);
+                opacity: 0;
+            }
         }
 
         #statusMessage {
             text-align: center;
             font-size: 18px;
             margin-bottom: 10px;
-            color: #333;
+            color: #6a3093;
+            font-weight: 500;
+        }
+
+        #timeEstimate {
+            text-align: center;
+            font-size: 16px;
+            margin: 10px 0;
+            color: #9b59b6;
+            font-style: italic;
         }
 
         #spinner {
@@ -65,7 +111,7 @@
             font-size: 40px;
             animation: spin 1s linear infinite;
             display: none;
-            color: #388e3c;
+            color: #9b59b6;
             margin: 20px 0;
         }
 
@@ -81,31 +127,53 @@
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             background: white;
             padding: 20px;
-            border-radius: 12px;
+            border-radius: 15px;
+            border: 1px solid #e0d0eb;
         }
 
         table {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 12px;
+            overflow: hidden;
         }
 
         th, td {
-            border: 1px solid #c8e6c9;
-            padding: 10px;
+            border: 1px solid #d2b4de;
+            padding: 12px;
             text-align: center;
         }
 
         th {
-            background-color: #e8f5e9;
-            color: #1b5e20;
+            background: linear-gradient(to bottom, #e8d5f0, #d2b4de);
+            color: #4a235a;
+            font-weight: 600;
         }
 
         tr:nth-child(even) {
-            background-color: #f1f8e9;
+            background-color: #f5eef8;
         }
 
         tr:hover {
-            background-color: #dcedc8;
+            background-color: #ebdef0;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background-color: #ebdef0;
+            border-radius: 3px;
+            margin: 10px 0;
+            overflow: hidden;
+            display: none;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(to right, #9b59b6, #8e44ad);
+            width: 0%;
+            transition: width 0.3s ease;
         }
     </style>
 </head>
@@ -119,6 +187,10 @@
     </div>
     
     <div id="statusMessage"></div>
+    <div id="timeEstimate" style="font-size: 1.1em; font-weight: 500; margin: 10px 0;"></div>
+<div class="progress-container" id="progressContainer" style="width: 80%; margin: 0 auto;">
+    <div class="progress-bar" id="progressBar"></div>
+</div>
     <div id="spinner">⏳</div>
     <div id="tablesContainer"></div>
 
